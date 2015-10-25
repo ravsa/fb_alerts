@@ -1,12 +1,22 @@
-import gtk
-import glib
+from gi.repository import Gtk as gtk
+from gi.repository import GLib as glib
+from gi.repository import Gdk as gdk
 import cPickle,os
 spn=None
-file=open('creds','w')
+root=None
+xx,yy=0,0
+file=open(os.path.abspath('~/.fb_creds'),'w')
 def login():
-    global spn
-    def active(x,etc):
-        etc.modify_text(gtk.STATE_NORMAL,etc.get_colormap().alloc_color('black'))
+    global spn,root
+    def animation():
+        def temp():
+            global xx,yy
+            xx+=1
+            yy+=1+((float(gdk.Screen().width())-float(gdk.Screen().height()))/float(gdk.Screen().height()))
+            root.move(yy,xx)
+            if xx==gdk.Screen().height()/2-150:return False
+            return True
+        glib.timeout_add(5,temp)
     def done():
         elab.hide()
         plab.hide()
@@ -19,6 +29,8 @@ def login():
                 cPickle.dump(data,file)
                 done()
     root=gtk.Window()
+    root.move(xx,yy)
+    animation()
     root.set_default_size(300,300)
     root.connect('destroy',lambda x:gtk.main_quit())
     spn=gtk.Spinner()
@@ -32,15 +44,9 @@ def login():
     ebox.add(image)
     ebox.connect('button-press-event',process)
     image2.set_from_file(os.path.abspath('./icons/user.png'))
-    elab=gtk.Entry()
-    elab.set_text('Email')
-    elab.modify_text(gtk.STATE_NORMAL,elab.get_colormap().alloc_color('light grey'))
-    elab.connect('changed',active,elab)
-    plab=gtk.Entry()
-    plab.set_text('PassWord')
+    elab=gtk.Entry(text="Email")
+    plab=gtk.Entry(text="PassWord")
     plab.set_visibility(False)
-    plab.connect('changed',active,plab)
-    plab.modify_text(gtk.STATE_NORMAL,plab.get_colormap().alloc_color('light grey'))
     vbox.pack_start(image2,False,False,7)
     vbox.pack_start(elab,False,False,7)
     vbox.pack_start(plab,False,False,7)
