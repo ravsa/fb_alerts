@@ -5,7 +5,7 @@ import cPickle,os
 spn=None
 root=None
 xx,yy=0,0
-file=open(os.path.abspath('~/.fb_creds'),'w')
+file=open(os.path.expanduser('~/.fb_creds'),'w')
 def login():
     global spn,root
     def animation():
