@@ -41,9 +41,10 @@ def init():
     ind_notification.set_status(ai.IndicatorStatus.ACTIVE)
     ind_message.set_status(ai.IndicatorStatus.ACTIVE)
     ind_request.set_status(ai.IndicatorStatus.ACTIVE)
+    Notify.init(app_notification)
 def content():
-    global browser, creds, notification, message, request, online, soup, no_connection, failed
-    Notify.init('idontknow')
+    init()
+    global browser, creds, notification, message, request, online, soup, no_connection, failed,ind_message,ind_request,ind_notification
     while True:
         try:
                 browser.open('https://m.facebook.com')
@@ -119,3 +120,5 @@ def build_menu():
     menu.append(exit)
     menu.show_all()
     return menu
+thread.start_new_thread(content,())
+gtk.main()
