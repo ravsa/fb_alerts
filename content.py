@@ -96,4 +96,3 @@ def content():
                                         os.path.abspath('./icons/error/auth_fail.png')).show()
                 failed = False
             time.sleep(60)
-content()
