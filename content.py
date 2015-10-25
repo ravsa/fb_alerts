@@ -4,18 +4,17 @@ import mechanize
 import cPickle
 import re
 import os
-import sys
 import time
-update_time = 10
-retry_time = 1
+update_time = 40
 creds, notification, message, request, online, browser, cookies, soup = None, None, None, None, None, None, None, None
+no_connection = True
+failed = True
 with open(os.path.expanduser('~/.fb_creds'), 'r') as file:
     creds = cPickle.load(file)
 
 
 def init():
     global browser, cookies
-    Notify.init('idontknow')
     browser = mechanize.Browser()
     browser.set_handle_robots(False)
     cookies = mechanize.CookieJar()
@@ -24,25 +23,26 @@ def init():
 
 
 def content():
-    global browser, creds, notification, message, request, online, soup
+    global browser, creds, notification, message, request, online, soup, no_connection, failed
     init()
+    Notify.init('idontknow')
     while True:
-        time.sleep(retry_time)
         try:
             browser.open('https://m.facebook.com')
             browser.select_form(nr=0)
             browser.form['email'] = creds[0]
             browser.form['pass'] = creds[1]
-            res = browser.submit()
+            browser.submit()
             while True:
-                time.sleep(update_time)
                 try:
                     browser.open('https://m.facebook.com')
                     soup = BeautifulSoup(browser.response().read())
                 except:
-                    Notify.Notification.new(
-                        "<b>Authentication Failure</b>", 'Check your email and password', os.path.abspath('./icons/messages/1.png')).show()
-                    print "Error 321"
+                    if failed:
+                        Notify.Notification.new("<b>Authentication Failure</b>", 'Check your email and password',
+                                                os.path.abspath('./icons/error/auth_fail.png')).show()
+                        failed = False
+                    time.sleep(update_time)
                     continue
                 for s in soup.find('a', href=re.compile(r'.*notifications.*')):
                     try:
@@ -81,18 +81,19 @@ def content():
                             request = int(re.search(r'\((.*?)\)', s).group(1))
                         except:
                             pass
-                lis = [notification, request, message, online]
-                print lis
-                sys.exit()
-        except mechanize.URLError, e:
-            Notify.uninit()
-            Notify.Notification.new("<b>Disconnect</b>", 'connection error',
-                                    os.path.abspath('./icons/messages/1.png')).show()
-            break
-        except Exception, e:
-            print e
-            print "Error 123"
-            Notify.Notification.new("<b>Authentication Failure</b>", 'Check your email and password',
-                                    os.path.abspath('./icons/messages/1.png')).show()
-            break
+                time.sleep(update_time)
+                no_connection = True
+                failed = True
+        except mechanize.URLError:
+            if no_connection:
+                Notify.Notification.new("<b>No_Connection</b>", 'connection error in FB_alert',
+                                        os.path.abspath('./icons/error/no_connection.png')).show()
+                no_connection = False
+            time.sleep(60)
+        except:
+            if failed:
+                Notify.Notification.new("<b>Authentication Failure</b>", 'Check your email and password',
+                                        os.path.abspath('./icons/error/auth_fail.png')).show()
+                failed = False
+            time.sleep(60)
 content()
