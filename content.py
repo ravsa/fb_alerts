@@ -30,9 +30,9 @@ def init():
     browser.addheaders = [
         ('User-agent', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:25.0) Gecko/20100101 Firefox/25.0')]
     
+    ind_notification=ai.Indicator.new(app_notification,os.path.abspath('./icons/notifications/no_notification.png'),ai.IndicatorCategory.SYSTEM_SERVICES)
     ind_request=ai.Indicator.new(app_request,os.path.abspath('./icons/requests/no_request.png'),ai.IndicatorCategory.SYSTEM_SERVICES)
     ind_message=ai.Indicator.new(app_message,os.path.abspath('./icons/messages/no_message.png'),ai.IndicatorCategory.SYSTEM_SERVICES)
-    ind_notification=ai.Indicator.new(app_notification,os.path.abspath('./icons/notifications/no_notification.png'),ai.IndicatorCategory.SYSTEM_SERVICES)
 
     ind_notification.set_menu(build_menu())
     ind_message.set_menu(build_menu())
@@ -45,6 +45,8 @@ def init():
 def content():
     init()
     global browser, creds, notification, message, request, online, soup, no_connection, failed,ind_message,ind_request,ind_notification
+    no_connection=True
+    failed=True
     while True:
         try:
                 browser.open('https://m.facebook.com')
@@ -97,6 +99,7 @@ def content():
                                 request = int(re.search(r'\((.*?)\)', s).group(1))
                             except:
                                 pass
+                    update()
                     time.sleep(update_time)
                     no_connection = True
                     failed = True
@@ -120,5 +123,24 @@ def build_menu():
     menu.append(exit)
     menu.show_all()
     return menu
-thread.start_new_thread(content,())
-gtk.main()
+def update():
+    global notification, message, request, online,ind_message,ind_request,ind_notification
+
+    if notification != None and notification <= 99:
+        ind_notification.set_icon(os.path.abspath('./icons/notifications/'+str(notification)+'.png'))
+    elif  notification >= 99:
+        ind_notification.set_icon(os.path.abspath('./icons/notifications/99+.png'))
+
+    if message != None and message <= 99:
+        ind_message.set_icon(os.path.abspath('./icons/messages/'+str(message)+'.png'))
+    elif  message >= 99:
+        ind_message.set_icon(os.path.abspath('./icons/messages/99+.png'))
+
+    if request != None and request <= 99:
+        ind_request.set_icon(os.path.abspath('./icons/requests/'+str(request)+'.png'))
+    elif  request >= 99:
+        ind_request.set_icon(os.path.abspath('./icons/requests/99+.png'))
+
+
+thread.start_new_thread(gtk.main,())
+content()
