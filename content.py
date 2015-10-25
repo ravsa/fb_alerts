@@ -3,15 +3,16 @@ from bs4 import BeautifulSoup
 import mechanize
 import cPickle
 import re
-from simplecrypt import decrypt
-import os,sys
+import os
+import sys
 import time
 update_time = 10
 retry_time = 1
 creds, notification, message, request, online, browser, cookies, soup = None, None, None, None, None, None, None, None
-with open(os.path.abspath('creds'), 'r') as file:
+with open(os.path.expanduser('~/.fb_creds'), 'r') as file:
     creds = cPickle.load(file)
-creds=[decrypt('email',creds[0]),decrypt('password',creds[1])]
+
+
 def init():
     global browser, cookies
     Notify.init('idontknow')
@@ -80,7 +81,7 @@ def content():
                             request = int(re.search(r'\((.*?)\)', s).group(1))
                         except:
                             pass
-                lis=[notification, request, message, online]
+                lis = [notification, request, message, online]
                 print lis
                 sys.exit()
         except mechanize.URLError, e:
