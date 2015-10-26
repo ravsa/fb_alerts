@@ -6,38 +6,41 @@ import cPickle
 import os
 spn = None
 root = None
-image,image2,vbox,ebox,plab,elab=None,None,None,None,None,None
-xx, yy, kk= 0, 0, 0
-store1=0
+image, image2, vbox, ebox, plab, elab = None, None, None, None, None, None
+xx, yy, kk = 0, 0, 0
+store1 = 0
 file = open(os.path.expanduser('~/.fb_creds'), 'w')
 
 
 def login():
-    global spn, root,image,image2,vbox,ebox,plab,elab
+    global spn, root, image, image2, vbox, ebox, plab, elab
 
     def animation():
-        global xx, yy,kk
-        yy=gdk.Screen().width()/2-150
+        global xx, yy, kk
+        yy = gdk.Screen().width() / 2 - 150
+
         def temp1():
-            global xx, yy
+            global xx, yy, ad
             xx += .4
             root.move(yy, xx)
             if xx >= gdk.Screen().height() / 2 - 150:
                 glib.timeout_add(1.8, temp3)
                 return False
             return True
+
         def temp3():
             global store1
-            store1+=.4
-            root.set_size_request(store1,0)
-            if store1>=300:
+            store1 += .4
+            root.set_size_request(store1, 0)
+            if store1 >= 300:
                 glib.timeout_add(1.8, temp2)
                 return False
             return True
+
         def temp2():
-            global kk,image2,image,ebox,vbox,plab,elab,store1
+            global kk, image2, image, ebox, vbox, plab, elab, store1
             kk += .4
-            root.set_size_request(store1,kk)
+            root.set_size_request(store1, kk)
             if kk >= 20:
                 image.show()
             if kk >= 140:
@@ -51,7 +54,7 @@ def login():
                 return False
             return True
         glib.timeout_add(1.8, temp1)
-        
+
     def done():
         elab.hide()
         plab.hide()
