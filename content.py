@@ -49,6 +49,8 @@ def create():
     ind_message=ai.Indicator.new(app_message,os.path.abspath('./icons/messages/no_message.png'),ai.IndicatorCategory.SYSTEM_SERVICES)
 
     ind_notification.set_menu(notification_menu())
+    ind_message.set_menu(message_menu())
+    ind_request.set_menu(request_menu())
     ind_notification.set_status(ai.IndicatorStatus.ACTIVE)
     ind_message.set_status(ai.IndicatorStatus.ACTIVE)
     ind_request.set_status(ai.IndicatorStatus.ACTIVE)
@@ -173,7 +175,26 @@ def notification_menu_data():
             pextra[c].set_text(i)
             menya[c].show_all()
             c+=1
+def message_menu():
+    menu=gtk.Menu()
+    none=gtk.MenuItem('see message')
+    none.connect('activate',message_view)
+    menu.append(none)
+    menu.show_all()
+    return menu
+def message_view(etc):
+    wb.open_new_tab('https://www.facebook.com/messages')
     
+def request_menu():
+    menu=gtk.Menu()
+    none=gtk.MenuItem('see requests')
+    none.connect('activate',request_view)
+    menu.append(none)
+    menu.show_all()
+    return menu
+def request_view(etc):
+    wb.open_new_tab('https://www.facebook.com')
+
 def update():
     global notification, message, request, online,ind_message,ind_request,ind_notification
 
