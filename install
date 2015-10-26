@@ -1,4 +1,5 @@
 #!/bin/bash
+
 sudo apt-get install python-pip
 pip install -r requirement.txt
 mkdir /tmp/.fb_alerts
