@@ -6,25 +6,52 @@ import cPickle
 import os
 spn = None
 root = None
-xx, yy = 0, 0
+image,image2,vbox,ebox,plab,elab=None,None,None,None,None,None
+xx, yy, kk= 0, 0, 0
+store1=0
 file = open(os.path.expanduser('~/.fb_creds'), 'w')
 
 
 def login():
-    global spn, root
+    global spn, root,image,image2,vbox,ebox,plab,elab
 
     def animation():
-        def temp():
+        global xx, yy,kk
+        yy=gdk.Screen().width()/2-150
+        def temp1():
             global xx, yy
             xx += 1
-            yy += 1 + ((float(gdk.Screen().width()) -
-                        float(gdk.Screen().height())) / float(gdk.Screen().height()))
             root.move(yy, xx)
             if xx == gdk.Screen().height() / 2 - 150:
+                glib.timeout_add(2, temp3)
                 return False
             return True
-        glib.timeout_add(5, temp)
-
+        def temp3():
+            global store1
+            store1+=.4
+            root.set_size_request(store1,0)
+            if store1>=300:
+                glib.timeout_add(1, temp2)
+                return False
+            return True
+        def temp2():
+            global kk,image2,image,ebox,vbox,plab,elab,store1
+            kk += .4
+            root.set_size_request(store1,kk)
+            if kk >= 20:
+                image.show()
+            if kk >= 140:
+                plab.show()
+            if kk >= 170:
+                elab.show()
+            if kk >= 210:
+                image2.show()
+            if kk >= 300:
+                root.show_all()
+                return False
+            return True
+        glib.timeout_add(6, temp1)
+        
     def done():
         elab.hide()
         plab.hide()
@@ -38,9 +65,9 @@ def login():
         cPickle.dump(data, file)
         done()
     root = gtk.Window()
+    root.set_title('Login (OffLine)')
     root.move(xx, yy)
-    animation()
-    root.set_default_size(300, 300)
+    root.set_size_request(30, 0)
     root.connect('destroy', lambda x: gtk.main_quit())
     spn = gtk.Spinner()
     spn.set_size_request(30, 30)
@@ -62,8 +89,10 @@ def login():
     vbox.pack_start(spn, False, False, 2)
     vbox.pack_start(ebox, False, False, 20)
     root.add(vbox)
-    root.show_all()
+    vbox.show()
+    root.show()
     spn.hide()
+    animation()
     gtk.main()
 login()
 file.close()
