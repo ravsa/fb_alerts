@@ -1,8 +1,11 @@
 from gi.repository import AppIndicator3 as ai
 from gi.repository import Gtk as gtk
+from gi.repository import Pango
 from gi.repository import Notify 
+import webbrowser as wb
 from bs4 import BeautifulSoup
 import os
+import sys
 import signal
 import thread
 import json
@@ -14,34 +17,41 @@ import time
 app_notification='fb_notification'
 app_message='fb_message'
 app_request='fb_request'
+notification_lab=list(range(100))
+notification_ebox=list(range(100))
 ind_notification,ind_request,ind_message=None,None,None
-update_time = 40
+update_time = 10
 failed,no_connection,creds, notification, message, request, online, browser, cookies, soup = True, True, None, None, None, None, None, None,None,None
+tmp,extra,pextra,menya=None,list(range(10)),list(range(10)),list(range(10))
 signal.signal(signal.SIGINT,signal.SIG_DFL)
 with open(os.path.expanduser('~/.fb_creds'), 'r') as file:
     creds = cPickle.load(file)
 
 
 def init():
-    global app_request,app_message,app_notification,ind_message,ind_request,ind_notification,browser, cookies
+    global browser, cookies
     browser = mechanize.Browser()
     browser.set_handle_robots(False)
     cookies = mechanize.CookieJar()
     browser.addheaders = [
         ('User-agent', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:25.0) Gecko/20100101 Firefox/25.0')]
-    
+    Notify.init('idontknow')
+
+    #ind_notification.set_menu(build_menu)
+    #ind_request.set_menu(build_menu)
+    #ind_message.set_menu(build_menu)
+
+
+def create(): 
+    global app_request,app_message,app_notification,ind_message,ind_request,ind_notification
     ind_notification=ai.Indicator.new(app_notification,os.path.abspath('./icons/notifications/no_notification.png'),ai.IndicatorCategory.SYSTEM_SERVICES)
     ind_request=ai.Indicator.new(app_request,os.path.abspath('./icons/requests/no_request.png'),ai.IndicatorCategory.SYSTEM_SERVICES)
     ind_message=ai.Indicator.new(app_message,os.path.abspath('./icons/messages/no_message.png'),ai.IndicatorCategory.SYSTEM_SERVICES)
 
     ind_notification.set_menu(build_menu())
-    ind_message.set_menu(build_menu())
-    ind_request.set_menu(build_menu())
-
     ind_notification.set_status(ai.IndicatorStatus.ACTIVE)
     ind_message.set_status(ai.IndicatorStatus.ACTIVE)
     ind_request.set_status(ai.IndicatorStatus.ACTIVE)
-    Notify.init(app_notification)
 def content():
     init()
     global browser, creds, notification, message, request, online, soup, no_connection, failed,ind_message,ind_request,ind_notification
@@ -49,15 +59,17 @@ def content():
     failed=True
     while True:
         try:
-                browser.open('https://m.facebook.com')
-                browser.select_form(nr=0)
-                browser.form['email'] = creds[0]
-                browser.form['pass'] = creds[1]
-                browser.submit()
+                #browser.open('https://m.facebook.com')
+                #browser.select_form(nr=0)
+                #browser.form['email'] = creds[0]
+                #browser.form['pass'] = creds[1]
+                #browser.submit()
+                print "Hello,World!"
                 while True:
                     try:
-                        browser.open('https://m.facebook.com')
-                        soup = BeautifulSoup(browser.response().read())
+                        #browser.open('https://m.facebook.com')
+                        #soup = BeautifulSoup(browser.response().read())
+                        soup=BeautifulSoup(open('Facebook.html','r').read())
                     except:
                         if failed:
                             Notify.Notification.new("<b>Authentication Failure</b>", 'Check your email and password', os.path.abspath('./icons/error/auth_fail.png')).show()
@@ -99,6 +111,7 @@ def content():
                                 request = int(re.search(r'\((.*?)\)', s).group(1))
                             except:
                                 pass
+                    menu_data()
                     update()
                     time.sleep(update_time)
                     no_connection = True
@@ -109,20 +122,65 @@ def content():
                                         os.path.abspath('./icons/error/no_connection.png')).show()
                 no_connection = False
             time.sleep(6)
-        except:
+        except Exception,e:
             if failed:
-                Notify.Notification.new("<b>Authentication Failure</b>", 'Check your email and password',
+                Notify.Notification.new("<b>_Authentication Failure</b>", 'Check your email and password',
                                             os.path.abspath('./icons/error/auth_fail.png')).show()
                 failed = False
             time.sleep(6)
-
-def build_menu():
+def view(etc):
+    wb.open_new_tab('https://www.facebook.com/notifications')
+def tempbuild_menu():
     menu=gtk.Menu()
-    exit=gtk.MenuItem('exit')
+    exit=gtk.MenuItem("None")
     exit.connect('activate',lambda x:gtk.main_quit())
     menu.append(exit)
     menu.show_all()
     return menu
+
+def build_menu():
+    global menya,extra,pextra
+    men=gtk.Menu()
+    for j,i in enumerate(extra):
+        extra[j]=gtk.HBox()
+        pextra[j]=gtk.Label()
+        menya[j]=gtk.MenuItem()
+        menya[j].connect('activate',view)
+        extra[j].add(pextra[j])
+        menya[j].add(extra[j])
+        men.append(menya[j])
+    men.show_all()
+    return men
+def menu_data():
+    global soup,pextra,tmp
+    temp=[]
+    c=0
+    for i in soup.find_all('a',href=re.compile('.*notification.*')):
+       temp.append(i.get_text()) 
+    for i in temp[1:-1]:
+        if c>9:
+            break
+        if i != '':
+            if c==0 and i != tmp:
+                if i.find('like')!=-1:
+                    status='<b>FB Like</b>'
+                    Notify.Notification.new(status,i,os.path.abspath('./icons/like.png')).show()
+                elif i.find('comment')!=-1:
+                    status='<b>FB Comment</b>'
+                    Notify.Notification.new(status,i,os.path.abspath('./icons/comment.png')).show()
+                elif i.find('tag')!=-1:
+                    status='<b>FB Tag</b>'
+                    Notify.Notification.new(status,i,os.path.abspath('./icons/tag.png')).show()
+                elif i.find('post')!=-1:
+                    status='<b>FB Post</b>'
+                    Notify.Notification.new(status,i,os.path.abspath('./icons/post.png')).show()
+                else:
+                    status='<b>FB Notification</b>'
+                    Notify.Notification.new(status,i,os.path.abspath('./icons/facebook.png')).show()
+                tmp=i
+            pextra[c].set_text(i)
+            c+=1
+    
 def update():
     global notification, message, request, online,ind_message,ind_request,ind_notification
 
@@ -141,6 +199,6 @@ def update():
     elif  request >= 99:
         ind_request.set_icon(os.path.abspath('./icons/requests/99+.png'))
 
-
+create()
 thread.start_new_thread(gtk.main,())
 content()
