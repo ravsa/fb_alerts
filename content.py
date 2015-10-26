@@ -23,6 +23,7 @@ ind_notification,ind_request,ind_message=None,None,None
 update_time = 10
 failed,no_connection,creds, notification, message, request, online, browser, cookies, soup = True, True, None, None, None, None, None, None,None,None
 tmp,extra,pextra,menya=None,list(range(10)),list(range(10)),list(range(10))
+count=0
 signal.signal(signal.SIGINT,signal.SIG_DFL)
 with open(os.path.expanduser('~/.fb_creds'), 'r') as file:
     creds = cPickle.load(file)
@@ -137,25 +138,28 @@ def notification_menu():
     men=gtk.Menu()
     for j,i in enumerate(extra):
         extra[j]=gtk.HBox()
+        extra[j].show()
         pextra[j]=gtk.Label()
+        pextra[j].show()
         menya[j]=gtk.MenuItem()
         menya[j].connect('activate',notification_view)
         extra[j].add(pextra[j])
         menya[j].add(extra[j])
+        menya[j].show()
         men.append(menya[j])
-    men.show_all()
+    men.show()
     return men
 def notification_menu_data():
-    global soup,pextra,menya,tmp,notification
+    global soup,pextra,menya,tmp,notification,count
     temp=[]
-    c=0
+    count=0
+    for i in xrange(10):
+        menya[i].hide()
     for i in soup.find_all('a',href=re.compile('.*notification.*')):
        temp.append(i.get_text()) 
     for i in temp[1:-1]:
-        if c>9:
-            break
-        if i != '' and notification!= 0:
-            if c==0 and i != tmp and notification != None and notification !=0 :
+        if i != '' and notification!= 0 and count<9:
+            if count==0 and i != tmp and notification != None and notification !=0 :
                 if i.find('like')!=-1:
                     status='<b>FB Like</b>'
                     Notify.Notification.new(status,i,os.path.abspath('./icons/like.png')).show()
@@ -172,9 +176,9 @@ def notification_menu_data():
                     status='<b>FB Notification</b>'
                     Notify.Notification.new(status,i,os.path.abspath('./icons/facebook.png')).show()
                 tmp=i
-            pextra[c].set_text(i)
-            menya[c].show_all()
-            c+=1
+            pextra[count].set_text(i)
+            menya[count].show_all()
+            count+=1
 def message_menu():
     menu=gtk.Menu()
     none=gtk.MenuItem('see message')
@@ -210,14 +214,14 @@ def update():
     elif  message >= 99:
         ind_message.set_icon(os.path.abspath('./icons/messages/99+.png'))
     else:
-        ind_notification.set_icon(os.path.abspath('./icons/messages/no_message.png'))
+        ind_message.set_icon(os.path.abspath('./icons/messages/no_message.png'))
 
     if request != None and request <= 99 and request !=0 :
         ind_request.set_icon(os.path.abspath('./icons/requests/'+str(request)+'.png'))
     elif  request >= 99:
         ind_request.set_icon(os.path.abspath('./icons/requests/99+.png'))
     else:
-        ind_notification.set_icon(os.path.abspath('./icons/requests/no_request.png'))
+        ind_request.set_icon(os.path.abspath('./icons/requests/no_request.png'))
 
 create()
 thread.start_new_thread(gtk.main,())
