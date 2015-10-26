@@ -22,7 +22,7 @@ notification_ebox=list(range(100))
 ind_notification,ind_request,ind_message=None,None,None
 update_time = 10
 failed,no_connection,creds, notification, message, request, online, browser, cookies, soup = True, True, None, None, None, None, None, None,None,None
-tmp,extra,pextra,menya=None,list(range(10)),list(range(10)),list(range(10))
+tmp,extra,pextra,menya=None,None,None,None
 count=0
 signal.signal(signal.SIGINT,signal.SIG_DFL)
 with open(os.path.expanduser('~/.fb_creds'), 'r') as file:
@@ -136,29 +136,27 @@ def notification_view(etc):
 def notification_menu():
     global menya,extra,pextra
     men=gtk.Menu()
-    for j,i in enumerate(extra):
-        extra[j]=gtk.HBox()
-        extra[j].show()
-        pextra[j]=gtk.Label()
-        pextra[j].show()
-        menya[j]=gtk.MenuItem()
-        menya[j].connect('activate',notification_view)
-        extra[j].add(pextra[j])
-        menya[j].add(extra[j])
-        menya[j].show()
-        men.append(menya[j])
+    extra=gtk.HBox()
+    extra.show()
+    pextra=gtk.Label()
+    pextra.show()
+    menya=gtk.MenuItem()
+    menya.connect('activate',notification_view)
+    extra.add(pextra)
+    menya.add(extra)
+    menya.show()
+    men.append(menya)
     men.show()
     return men
 def notification_menu_data():
-    global soup,pextra,menya,tmp,notification,count
+    global soup,pextra,menya,tmp,notification
     temp=[]
+    string=''
     count=0
-    for i in xrange(10):
-        menya[i].hide()
     for i in soup.find_all('a',href=re.compile('.*notification.*')):
        temp.append(i.get_text()) 
     for i in temp[1:-1]:
-        if i != '' and notification!= 0 and count<9:
+        if i != '' and notification!= 0 :
             if count==0 and i != tmp and notification != None and notification !=0 :
                 if i.find('like')!=-1:
                     status='<b>FB Like</b>'
@@ -176,9 +174,9 @@ def notification_menu_data():
                     status='<b>FB Notification</b>'
                     Notify.Notification.new(status,i,os.path.abspath('./icons/facebook.png')).show()
                 tmp=i
-            pextra[count].set_text(i)
-            menya[count].show_all()
+            string=string+'--->>>   '+i+'\n'
             count+=1
+    pextra.set_text(string)
 def message_menu():
     menu=gtk.Menu()
     none=gtk.MenuItem('see message')
