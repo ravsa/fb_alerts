@@ -1,14 +1,11 @@
 from gi.repository import AppIndicator3 as ai
 from gi.repository import Gtk as gtk
-from gi.repository import Pango
 from gi.repository import Notify 
 import webbrowser as wb
 from bs4 import BeautifulSoup
 import os
-import sys
 import signal
 import thread
-import json
 import mechanize
 import cPickle
 import re
@@ -20,10 +17,9 @@ app_request='fb_request'
 notification_lab=list(range(100))
 notification_ebox=list(range(100))
 ind_notification,ind_request,ind_message=None,None,None
-update_time = 10
+update_time = 60
 failed,no_connection,creds, notification, message, request, online, browser, cookies, soup = True, True, None, None, None, None, None, None,None,None
 tmp,extra,pextra,menya=None,None,None,None
-count=0
 signal.signal(signal.SIGINT,signal.SIG_DFL)
 with open(os.path.expanduser('~/.fb_creds'), 'r') as file:
     creds = cPickle.load(file)
@@ -62,17 +58,15 @@ def content():
     failed=True
     while True:
         try:
-                #browser.open('https://m.facebook.com')
-                #browser.select_form(nr=0)
-                #browser.form['email'] = creds[0]
-                #browser.form['pass'] = creds[1]
-                #browser.submit()
-                print "Hello,World!"
+                browser.open('https://m.facebook.com')
+                browser.select_form(nr=0)
+                browser.form['email'] = creds[0]
+                browser.form['pass'] = creds[1]
+                browser.submit()
                 while True:
                     try:
-                        #browser.open('https://m.facebook.com')
-                        #soup = BeautifulSoup(browser.response().read())
-                        soup=BeautifulSoup(open('Facebook.html','r').read())
+                        browser.open('https://m.facebook.com')
+                        soup = BeautifulSoup(browser.response().read())
                     except:
                         if failed:
                             Notify.Notification.new("<b>Authentication Failure</b>", 'Check your email and password', os.path.abspath('./icons/error/auth_fail.png')).show()
@@ -124,13 +118,13 @@ def content():
                 Notify.Notification.new("<b>No_Connection</b>", 'connection error in FB_alert',
                                         os.path.abspath('./icons/error/no_connection.png')).show()
                 no_connection = False
-            time.sleep(6)
+            time.sleep(60)
         except Exception,e:
             if failed:
                 Notify.Notification.new("<b>_Authentication Failure</b>",str(e)+ 'Check your email and password',
                                             os.path.abspath('./icons/error/auth_fail.png')).show()
                 failed = False
-            time.sleep(6)
+            time.sleep(60)
 def notification_view(etc):
     wb.open_new_tab('https://www.facebook.com/notifications')
 def notification_menu():
