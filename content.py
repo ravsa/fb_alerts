@@ -39,12 +39,12 @@ def init():
 
 def create():
     global app_request, app_message, app_notification, ind_message, ind_request, ind_notification
-    ind_notification = ai.Indicator.new(app_notification, os.path.abspath(
-        './icons/notifications/no_notification.png'), ai.IndicatorCategory.SYSTEM_SERVICES)
-    ind_request = ai.Indicator.new(app_request, os.path.abspath(
-        './icons/requests/no_request.png'), ai.IndicatorCategory.SYSTEM_SERVICES)
-    ind_message = ai.Indicator.new(app_message, os.path.abspath(
-        './icons/messages/no_message.png'), ai.IndicatorCategory.SYSTEM_SERVICES)
+    ind_notification = ai.Indicator.new(app_notification, os.path.expanduser(
+        '~/.fb_alerts/icons/notifications/no_notification.png'), ai.IndicatorCategory.SYSTEM_SERVICES)
+    ind_request = ai.Indicator.new(app_request, os.path.expanduser(
+        '~/.fb_alerts/icons/requests/no_request.png'), ai.IndicatorCategory.SYSTEM_SERVICES)
+    ind_message = ai.Indicator.new(app_message, os.path.expanduser(
+        '~/.fb_alerts/icons/messages/no_message.png'), ai.IndicatorCategory.SYSTEM_SERVICES)
 
     ind_notification.set_menu(notification_menu())
     ind_message.set_menu(message_menu())
@@ -73,7 +73,7 @@ def content():
                 except:
                     if failed:
                         Notify.Notification.new("<b>Authentication Failure</b>", 'Check your email and password',
-                                                os.path.abspath('./icons/error/auth_fail.png')).show()
+                                                os.path.expanduser('~/.fb_alerts/icons/error/auth_fail.png')).show()
                         failed = False
                     time.sleep(update_time)
                 for s in soup.find('a', href=re.compile(r'.*notifications.*')):
@@ -120,13 +120,13 @@ def content():
         except mechanize.URLError:
             if no_connection:
                 Notify.Notification.new("<b>No_Connection</b>", 'connection error in FB_alert',
-                                        os.path.abspath('./icons/error/no_connection.png')).show()
+                                        os.path.expanduser('~/.fb_alerts/icons/error/no_connection.png')).show()
                 no_connection = False
             time.sleep(60)
         except Exception, e:
             if failed:
                 Notify.Notification.new("<b>_Authentication Failure</b>", str(e) + 'Check your email and password',
-                                        os.path.abspath('./icons/error/auth_fail.png')).show()
+                                        os.path.expanduser('~/.fb_alerts/icons/error/auth_fail.png')).show()
                 failed = False
             time.sleep(60)
 
@@ -165,23 +165,23 @@ def notification_menu_data():
                 if i.find('like') != -1:
                     status = '<b>FB Like</b>'
                     Notify.Notification.new(
-                        status, i, os.path.abspath('./icons/like.png')).show()
+                        status, i, os.path.expanduser('~/.fb_alerts/icons/like.png')).show()
                 elif i.find('comment') != -1:
                     status = '<b>FB Comment</b>'
                     Notify.Notification.new(
-                        status, i, os.path.abspath('./icons/comment.png')).show()
+                        status, i, os.path.expanduser('~/.fb_alerts/icons/comment.png')).show()
                 elif i.find('tag') != -1:
                     status = '<b>FB Tag</b>'
                     Notify.Notification.new(
-                        status, i, os.path.abspath('./icons/tag.png')).show()
+                        status, i, os.path.expanduser('~/.fb_alerts/icons/tag.png')).show()
                 elif i.find('post') != -1:
                     status = '<b>FB Post</b>'
                     Notify.Notification.new(
-                        status, i, os.path.abspath('./icons/post.png')).show()
+                        status, i, os.path.expanduser('~/.fb_alerts/icons/post.png')).show()
                 else:
                     status = '<b>FB Notification</b>'
-                    Notify.Notification.new(status, i, os.path.abspath(
-                        './icons/facebook.png')).show()
+                    Notify.Notification.new(status, i, os.path.expanduser(
+                        '~/.fb_alerts/icons/facebook.png')).show()
                 tmp = i
             string = string + '_>>>   ' + i + '\n'
             count += 1
@@ -218,32 +218,32 @@ def update():
     global notification, message, request, online, ind_message, ind_request, ind_notification
 
     if notification != None and notification <= 99 and notification != 0:
-        ind_notification.set_icon(os.path.abspath(
-            './icons/notifications/' + str(notification) + '.png'))
+        ind_notification.set_icon(os.path.expanduser(
+            '~/.fb_alerts/icons/notifications/' + str(notification) + '.png'))
     elif notification >= 99:
-        ind_notification.set_icon(os.path.abspath(
-            './icons/notifications/99+.png'))
+        ind_notification.set_icon(os.path.expanduser(
+            '~/.fb_alerts/icons/notifications/99+.png'))
     else:
-        ind_notification.set_icon(os.path.abspath(
-            './icons/notifications/no_notification.png'))
+        ind_notification.set_icon(os.path.expanduser(
+            '~/.fb_alerts/icons/notifications/no_notification.png'))
 
     if message != None and message <= 99 and message != 0:
-        ind_message.set_icon(os.path.abspath(
-            './icons/messages/' + str(message) + '.png'))
+        ind_message.set_icon(os.path.expanduser(
+            '~/.fb_alerts/icons/messages/' + str(message) + '.png'))
     elif message >= 99:
-        ind_message.set_icon(os.path.abspath('./icons/messages/99+.png'))
+        ind_message.set_icon(os.path.expanduser('~/.fb_alerts/icons/messages/99+.png'))
     else:
-        ind_message.set_icon(os.path.abspath(
-            './icons/messages/no_message.png'))
+        ind_message.set_icon(os.path.expanduser(
+            '~/.fb_alerts/icons/messages/no_message.png'))
 
     if request != None and request <= 99 and request != 0:
-        ind_request.set_icon(os.path.abspath(
-            './icons/requests/' + str(request) + '.png'))
+        ind_request.set_icon(os.path.expanduser(
+            '~/.fb_alerts/icons/requests/' + str(request) + '.png'))
     elif request >= 99:
-        ind_request.set_icon(os.path.abspath('./icons/requests/99+.png'))
+        ind_request.set_icon(os.path.expanduser('~/.fb_alerts/icons/requests/99+.png'))
     else:
-        ind_request.set_icon(os.path.abspath(
-            './icons/requests/no_request.png'))
+        ind_request.set_icon(os.path.expanduser(
+            '~/.fb_alerts/icons/requests/no_request.png'))
 
 create()
 thread.start_new_thread(gtk.main, ())
