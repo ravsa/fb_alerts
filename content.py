@@ -182,7 +182,7 @@ def notification_menu_data():
                     Notify.Notification.new(status, i, os.path.abspath(
                         './icons/facebook.png')).show()
                 tmp = i
-            string = string + '--->>>   ' + i + '\n'
+            string = string + '_>>>   ' + i + '\n'
             count += 1
     pextra.set_text(string)
 
