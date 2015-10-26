@@ -36,7 +36,6 @@ def init():
     Notify.init('idontknow')
 
 
-
 def create():
     global app_request, app_message, app_notification, ind_message, ind_request, ind_notification
     ind_notification = ai.Indicator.new(app_notification, os.path.expanduser(
@@ -61,17 +60,16 @@ def content():
     failed = True
     while True:
         try:
-  #          browser.open('https://m.facebook.com')
-  #          browser.select_form(nr=0)
-  #          browser.form['email'] = creds[0]
-  #          browser.form['pass'] = creds[1]
-  #          browser.submit()
-            print "Hello,World!"
+            browser.open('https://m.facebook.com')
+            browser.select_form(nr=0)
+            browser.form['email'] = creds[0]
+            browser.form['pass'] = creds[1]
+            browser.submit()
             while True:
                 try:
-                    #browser.open('https://m.facebook.com')
-                    #soup = BeautifulSoup(browser.response().read())
-                    soup = BeautifulSoup(open('/root/img/Facebook.html','r').read())
+                    browser.open('https://m.facebook.com')
+                    soup = BeautifulSoup(browser.response().read())
+                    #soup = BeautifulSoup(open('/root/img/Facebook.html','r').read())
                 except:
                     if failed:
                         Notify.Notification.new("<b>Authentication Failure</b>", 'Check your email and password',
@@ -234,7 +232,8 @@ def update():
         ind_message.set_icon(os.path.expanduser(
             '~/.fb_alerts/icons/messages/' + str(message) + '.png'))
     elif message >= 99:
-        ind_message.set_icon(os.path.expanduser('~/.fb_alerts/icons/messages/99+.png'))
+        ind_message.set_icon(os.path.expanduser(
+            '~/.fb_alerts/icons/messages/99+.png'))
     else:
         ind_message.set_icon(os.path.expanduser(
             '~/.fb_alerts/icons/messages/no_message.png'))
@@ -243,7 +242,8 @@ def update():
         ind_request.set_icon(os.path.expanduser(
             '~/.fb_alerts/icons/requests/' + str(request) + '.png'))
     elif request >= 99:
-        ind_request.set_icon(os.path.expanduser('~/.fb_alerts/icons/requests/99+.png'))
+        ind_request.set_icon(os.path.expanduser(
+            '~/.fb_alerts/icons/requests/99+.png'))
     else:
         ind_request.set_icon(os.path.expanduser(
             '~/.fb_alerts/icons/requests/no_request.png'))
