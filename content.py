@@ -48,7 +48,7 @@ def create():
     ind_request=ai.Indicator.new(app_request,os.path.abspath('./icons/requests/no_request.png'),ai.IndicatorCategory.SYSTEM_SERVICES)
     ind_message=ai.Indicator.new(app_message,os.path.abspath('./icons/messages/no_message.png'),ai.IndicatorCategory.SYSTEM_SERVICES)
 
-    ind_notification.set_menu(build_menu())
+    ind_notification.set_menu(notification_menu())
     ind_notification.set_status(ai.IndicatorStatus.ACTIVE)
     ind_message.set_status(ai.IndicatorStatus.ACTIVE)
     ind_request.set_status(ai.IndicatorStatus.ACTIVE)
@@ -83,7 +83,7 @@ def content():
                             try:
                                 notification = re.search(r'\((.*?)\)', s).group(1)
                             except:
-                                pass
+                                notification=0
                     for s in soup.find('a', href=re.compile(r'.*messages.*')):
                         try:
                             message = int(
@@ -92,7 +92,7 @@ def content():
                             try:
                                 message = int(re.search(r'\((.*?)\)', s).group(1))
                             except:
-                                pass
+                                message=0
                     for s in soup.find('a', href=re.compile(r'.*buddylist.*')):
                         try:
                             online = int(
@@ -101,7 +101,7 @@ def content():
                             try:
                                 online = int(re.search(r'\((.*?)\)', s).group(1))
                             except:
-                                pass
+                                online=0
                     for s in soup.find('a', href=re.compile(r'.*friends.*')):
                         try:
                             request = int(
@@ -110,8 +110,8 @@ def content():
                             try:
                                 request = int(re.search(r'\((.*?)\)', s).group(1))
                             except:
-                                pass
-                    menu_data()
+                                request=0
+                    notification_menu_data()
                     update()
                     time.sleep(update_time)
                     no_connection = True
@@ -124,35 +124,27 @@ def content():
             time.sleep(6)
         except Exception,e:
             if failed:
-                Notify.Notification.new("<b>_Authentication Failure</b>", 'Check your email and password',
+                Notify.Notification.new("<b>_Authentication Failure</b>",str(e)+ 'Check your email and password',
                                             os.path.abspath('./icons/error/auth_fail.png')).show()
                 failed = False
             time.sleep(6)
-def view(etc):
+def notification_view(etc):
     wb.open_new_tab('https://www.facebook.com/notifications')
-def tempbuild_menu():
-    menu=gtk.Menu()
-    exit=gtk.MenuItem("None")
-    exit.connect('activate',lambda x:gtk.main_quit())
-    menu.append(exit)
-    menu.show_all()
-    return menu
-
-def build_menu():
+def notification_menu():
     global menya,extra,pextra
     men=gtk.Menu()
     for j,i in enumerate(extra):
         extra[j]=gtk.HBox()
         pextra[j]=gtk.Label()
         menya[j]=gtk.MenuItem()
-        menya[j].connect('activate',view)
+        menya[j].connect('activate',notification_view)
         extra[j].add(pextra[j])
         menya[j].add(extra[j])
         men.append(menya[j])
     men.show_all()
     return men
-def menu_data():
-    global soup,pextra,tmp
+def notification_menu_data():
+    global soup,pextra,tmp,notification
     temp=[]
     c=0
     for i in soup.find_all('a',href=re.compile('.*notification.*')):
@@ -160,8 +152,8 @@ def menu_data():
     for i in temp[1:-1]:
         if c>9:
             break
-        if i != '':
-            if c==0 and i != tmp:
+        if i != '' and notification!= 0:
+            if c==0 and i != tmp and notification != None and notification !=0 :
                 if i.find('like')!=-1:
                     status='<b>FB Like</b>'
                     Notify.Notification.new(status,i,os.path.abspath('./icons/like.png')).show()
@@ -184,20 +176,26 @@ def menu_data():
 def update():
     global notification, message, request, online,ind_message,ind_request,ind_notification
 
-    if notification != None and notification <= 99:
+    if notification != None and notification <= 99 and notification!=0 :
         ind_notification.set_icon(os.path.abspath('./icons/notifications/'+str(notification)+'.png'))
     elif  notification >= 99:
         ind_notification.set_icon(os.path.abspath('./icons/notifications/99+.png'))
+    else:
+        ind_notification.set_icon(os.path.abspath('./icons/notifications/no_notification.png'))
 
-    if message != None and message <= 99:
+    if message != None and message <= 99 and message!= 0:
         ind_message.set_icon(os.path.abspath('./icons/messages/'+str(message)+'.png'))
     elif  message >= 99:
         ind_message.set_icon(os.path.abspath('./icons/messages/99+.png'))
+    else:
+        ind_notification.set_icon(os.path.abspath('./icons/messages/no_message.png'))
 
-    if request != None and request <= 99:
+    if request != None and request <= 99 and request !=0 :
         ind_request.set_icon(os.path.abspath('./icons/requests/'+str(request)+'.png'))
     elif  request >= 99:
         ind_request.set_icon(os.path.abspath('./icons/requests/99+.png'))
+    else:
+        ind_notification.set_icon(os.path.abspath('./icons/requests/no_request.png'))
 
 create()
 thread.start_new_thread(gtk.main,())
