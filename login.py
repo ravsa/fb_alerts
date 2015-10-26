@@ -1,3 +1,4 @@
+#!/usr/bin/python
 from gi.repository import Gtk as gtk
 from gi.repository import GLib as glib
 from gi.repository import Gdk as gdk

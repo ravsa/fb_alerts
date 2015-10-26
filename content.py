@@ -1,3 +1,4 @@
+#!/usr/bin/python
 from gi.repository import AppIndicator3 as ai
 from gi.repository import Gtk as gtk
 from gi.repository import Notify
