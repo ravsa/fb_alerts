@@ -61,15 +61,17 @@ def content():
     failed = True
     while True:
         try:
-            browser.open('https://m.facebook.com')
-            browser.select_form(nr=0)
-            browser.form['email'] = creds[0]
-            browser.form['pass'] = creds[1]
-            browser.submit()
+  #          browser.open('https://m.facebook.com')
+  #          browser.select_form(nr=0)
+  #          browser.form['email'] = creds[0]
+  #          browser.form['pass'] = creds[1]
+  #          browser.submit()
+            print "Hello,World!"
             while True:
                 try:
-                    browser.open('https://m.facebook.com')
-                    soup = BeautifulSoup(browser.response().read())
+                    #browser.open('https://m.facebook.com')
+                    #soup = BeautifulSoup(browser.response().read())
+                    soup = BeautifulSoup(open('/root/img/Facebook.html','r').read())
                 except:
                     if failed:
                         Notify.Notification.new("<b>Authentication Failure</b>", 'Check your email and password',
@@ -139,6 +141,7 @@ def notification_menu():
     global menya, extra, pextra
     men = gtk.Menu()
     extra = gtk.HBox()
+
     extra.show()
     pextra = gtk.Label()
     pextra.show()
@@ -183,7 +186,7 @@ def notification_menu_data():
                     Notify.Notification.new(status, i, os.path.expanduser(
                         '~/.fb_alerts/icons/facebook.png')).show()
                 tmp = i
-            string = string + '_>>>   ' + i + '\n'
+            string = string + '>>>_   ' + i + '\n'
             count += 1
     pextra.set_text(string)
 

@@ -20,10 +20,10 @@ def login():
         yy=gdk.Screen().width()/2-150
         def temp1():
             global xx, yy
-            xx += 1
+            xx += .4
             root.move(yy, xx)
-            if xx == gdk.Screen().height() / 2 - 150:
-                glib.timeout_add(2, temp3)
+            if xx >= gdk.Screen().height() / 2 - 150:
+                glib.timeout_add(1.8, temp3)
                 return False
             return True
         def temp3():
@@ -31,7 +31,7 @@ def login():
             store1+=.4
             root.set_size_request(store1,0)
             if store1>=300:
-                glib.timeout_add(1, temp2)
+                glib.timeout_add(1.8, temp2)
                 return False
             return True
         def temp2():
@@ -50,7 +50,7 @@ def login():
                 root.show_all()
                 return False
             return True
-        glib.timeout_add(6, temp1)
+        glib.timeout_add(1.8, temp1)
         
     def done():
         elab.hide()
