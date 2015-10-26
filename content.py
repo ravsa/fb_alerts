@@ -144,7 +144,7 @@ def notification_menu():
     men.show_all()
     return men
 def notification_menu_data():
-    global soup,pextra,tmp,notification
+    global soup,pextra,menya,tmp,notification
     temp=[]
     c=0
     for i in soup.find_all('a',href=re.compile('.*notification.*')):
@@ -171,6 +171,7 @@ def notification_menu_data():
                     Notify.Notification.new(status,i,os.path.abspath('./icons/facebook.png')).show()
                 tmp=i
             pextra[c].set_text(i)
+            menya[c].show_all()
             c+=1
     
 def update():
