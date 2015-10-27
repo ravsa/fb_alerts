@@ -4,7 +4,7 @@ sudo apt-get install python-pip
 pip install -r requirement.txt
 mkdir /tmp/.fb_alerts
 cp -arvf * /tmp/.fb_alerts/
-cp -arvf /tmp/.fb_alerts/ ~/
+cp -arvf /tmp/.fb_alerts/ ~/.fb/
 chmod 755 ~/.fb_alerlts/content.py
 chmod 755 ~/.fb_alerlts/login.py
 echo "alias login='~/.fb_alerts/login.py'" >>/etc/bash.bashrc
