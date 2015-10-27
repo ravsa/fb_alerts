@@ -18,7 +18,7 @@ app_request = 'fb_request'
 notification_lab = list(range(100))
 notification_ebox = list(range(100))
 ind_notification, ind_request, ind_message = None, None, None
-update_time = 60
+update_time = 6
 failed, no_connection, creds, notification, message, request, online, browser, cookies, soup = True, True, None, None, None, None, None, None, None, None
 tmp, extra, pextra, menya = None, None, None, None
 signal.signal(signal.SIGINT, signal.SIG_DFL)
@@ -70,53 +70,52 @@ def content():
                     browser.open('https://m.facebook.com')
                     soup = BeautifulSoup(browser.response().read())
                     #soup = BeautifulSoup(open('/root/img/Facebook.html','r').read())
-                except:
-                    if failed:
-                        Notify.Notification.new("<b>Authentication Failure</b>", 'Check your email and password',
-                                                os.path.expanduser('~/.fb_alerts/icons/error/auth_fail.png')).show()
-                        failed = False
                     time.sleep(update_time)
-                for s in soup.find('a', href=re.compile(r'.*notifications.*')):
-                    try:
-                        notification = int(
-                            re.search(r'\((.*?)\)', s.get_text()).group(1))
-                    except:
+                    for s in soup.find('a', href=re.compile(r'.*notifications.*')):
                         try:
-                            notification = re.search(r'\((.*?)\)', s).group(1)
+                            notification = int(
+                                re.search(r'\((.*?)\)', s.get_text()).group(1))
                         except:
-                            notification = 0
-                for s in soup.find('a', href=re.compile(r'.*messages.*')):
-                    try:
-                        message = int(
-                            re.search(r'\((.*?)\)', s.get_text()).group(1))
-                    except:
+                            try:
+                                notification = re.search(r'\((.*?)\)', s).group(1)
+                            except:
+                                notification = 0
+                    for s in soup.find('a', href=re.compile(r'.*messages.*')):
                         try:
-                            message = int(re.search(r'\((.*?)\)', s).group(1))
+                            message = int(
+                                re.search(r'\((.*?)\)', s.get_text()).group(1))
                         except:
-                            message = 0
-                for s in soup.find('a', href=re.compile(r'.*buddylist.*')):
-                    try:
-                        online = int(
-                            re.search(r'\((.*?)\)', s.get_text()).group(1))
-                    except:
+                            try:
+                                message = int(re.search(r'\((.*?)\)', s).group(1))
+                            except:
+                                message = 0
+                    for s in soup.find('a', href=re.compile(r'.*buddylist.*')):
                         try:
-                            online = int(re.search(r'\((.*?)\)', s).group(1))
+                            online = int(
+                                re.search(r'\((.*?)\)', s.get_text()).group(1))
                         except:
-                            online = 0
-                for s in soup.find('a', href=re.compile(r'.*friends.*')):
-                    try:
-                        request = int(
-                            re.search(r'\((.*?)\)', s.get_text()).group(1))
-                    except:
+                            try:
+                                online = int(re.search(r'\((.*?)\)', s).group(1))
+                            except:
+                                online = 0
+                    for s in soup.find('a', href=re.compile(r'.*friends.*')):
                         try:
-                            request = int(re.search(r'\((.*?)\)', s).group(1))
+                            request = int(
+                                re.search(r'\((.*?)\)', s.get_text()).group(1))
                         except:
-                            request = 0
-                notification_menu_data()
-                update()
-                time.sleep(update_time)
-                no_connection = True
-                failed = True
+                            try:
+                                request = int(re.search(r'\((.*?)\)', s).group(1))
+                            except:
+                                request = 0
+                    notification_menu_data()
+                    update()
+                    time.sleep(update_time)
+                    no_connection = True
+                    failed = True
+                except:
+                    if no_connection:
+                        Notify.Notification.new("<b>No_Connection</b>", 'unable to connect', os.path.expanduser('~/.fb_alerts/icons/error/no_connection.png')).show()
+                        no_connection = False
         except mechanize.URLError:
             if no_connection:
                 Notify.Notification.new("<b>No_Connection</b>", 'connection error in FB_alert',
@@ -157,12 +156,17 @@ def notification_menu_data():
     global soup, pextra, menya, tmp, notification
     temp = []
     string = ''
+    time = ''
     count = 0
     for i in soup.find_all('a', href=re.compile('.*notification.*')):
+        if i.find_all('strong') ==  []:
+            for x in i.find_all('abbr'):
+                time=x.get_text()
         temp.append(i.get_text())
     for i in temp[1:-1]:
+        lol=i
         if i != '' and notification != 0:
-            if count == 0 and i != tmp and notification != None and notification != 0:
+            if count == 0 and lol.replace(str(time),'') != tmp and notification != None and notification != 0:
                 if i.find('like') != -1:
                     status = '<b>FB Like</b>'
                     Notify.Notification.new(
@@ -183,8 +187,8 @@ def notification_menu_data():
                     status = '<b>FB Notification</b>'
                     Notify.Notification.new(status, i, os.path.expanduser(
                         '~/.fb_alerts/icons/facebook.png')).show()
-                tmp = i
-            string = string + '>>>_   ' + i + '\n'
+                tmp = i.replace(str(time),'')
+            string = string + '>>>    ' + i + '\n'
             count += 1
     pextra.set_text(string)
 

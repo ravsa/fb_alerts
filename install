@@ -8,5 +8,4 @@ cp -arvf /tmp/.fb_alerts/ ~/
 chmod 755 ~/.fb_alerlts/content.py
 chmod 755 ~/.fb_alerlts/login.py
 echo "alias login='~/.fb_alerts/login.py'" >>/etc/bash.bashrc
-echo "~/.fb_alerts/content.py" >>/etc/bash.bashrc
 ~/.fb_alerts/login.py
