@@ -62,16 +62,17 @@ def content():
     failed = True
     while True:
         try:
-            browser.open('https://m.facebook.com')
-            browser.select_form(nr=0)
-            browser.form['email'] = creds[0]
-            browser.form['pass'] = creds[1]
-            browser.submit()
+#            browser.open('https://m.facebook.com')
+#            browser.select_form(nr=0)
+#            browser.form['email'] = creds[0]
+#            browser.form['pass'] = creds[1]
+#            browser.submit()
+            print
             while True:
                 try:
-                    browser.open('https://m.facebook.com')
-                    soup = BeautifulSoup(browser.response().read())
-                    #soup = BeautifulSoup(open('/root/img/Facebook.html','r').read())
+                   # browser.open('https://m.facebook.com')
+                   # soup = BeautifulSoup(browser.response().read())
+                    soup = BeautifulSoup(open('/root/img/Facebook.html','r').read())
                     time.sleep(update_time)
                     for s in soup.find('a', href=re.compile(r'.*notifications.*')):
                         try:
