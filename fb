@@ -19,7 +19,7 @@ app_request = 'fb_request'
 notification_lab = list(range(100))
 notification_ebox = list(range(100))
 ind_notification, ind_request, ind_message = None, None, None
-update_time = 6
+update_time = 60
 failed, no_connection, creds, notification, message, request, online, browser, cookies, soup = True, True, None, None, None, None, None, None, None, None
 tmp, extra, pextra, menya = 0, None, None, None
 signal.signal(signal.SIGINT, signal.SIG_DFL)
@@ -62,17 +62,15 @@ def content():
     failed = True
     while True:
         try:
-#            browser.open('https://m.facebook.com')
-#            browser.select_form(nr=0)
-#            browser.form['email'] = creds[0]
-#            browser.form['pass'] = creds[1]
-#            browser.submit()
-            print
+            browser.open('https://m.facebook.com')
+            browser.select_form(nr=0)
+            browser.form['email'] = creds[0]
+            browser.form['pass'] = creds[1]
+            browser.submit()
             while True:
                 try:
-                   # browser.open('https://m.facebook.com')
-                   # soup = BeautifulSoup(browser.response().read())
-                    soup = BeautifulSoup(open('/root/img/Facebook.html','r').read())
+                    browser.open('https://m.facebook.com')
+                    soup = BeautifulSoup(browser.response().read())
                     time.sleep(update_time)
                     for s in soup.find('a', href=re.compile(r'.*notifications.*')):
                         try:
