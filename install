@@ -1,7 +1,7 @@
 #!/bin/bash
 
-sudo apt-get install python-pip
-pip install -r requirement.txt
+#sudo apt-get install python-pip
+#pip install -r requirement.txt
 mkdir /tmp/.fb_alerts
 cp -arvf * /tmp/.fb_alerts/
 cp -arvf /tmp/.fb_alerts/ ~/
