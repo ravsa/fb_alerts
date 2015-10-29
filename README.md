@@ -1,4 +1,5 @@
 **fb_alerts**
+<<<<<<< HEAD
 simple facebook notification,message,friend request alerts based on gtk3+ and python
 ![Alt text](https://raw.github.com/ravsa/master/fb_alerts/icons/image_i.png)
 
@@ -14,6 +15,14 @@ simple facebook notification,message,friend request alerts based on gtk3+ and py
 
 
 ![alt text](https://raw.github.com/ravsa/master/fb_alerts/icons/image_n.png)
+=======
+simple facebook notification alerts based on gtk3+ and python
+![alt text](https://raw.github.com/ravsa/fb_alerts/master/icons/image_i.png)
+
+
+
+![alt text](https://raw.github.com/ravsa/fb_alerts/master/icons/image_n.png)
+>>>>>>> fdae7d70cc5d8e8e2db2ebe96e4a1d06448ea265
 
 **Dependencies:**
 python 2.7+
