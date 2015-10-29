@@ -31,7 +31,7 @@ $ `sudo ./install`
       -> password:___
 
    # run `gnome-session-properties` (once)
-      -> add -> command -> ""$HOME/.fb_alerts/fb"" -> Add
+      -> add -> command -> ""$HOME/.fb_alerts/fba"" -> Add
       **$HOME** is your home directory (ex: /home/something)
 
    # reboot
