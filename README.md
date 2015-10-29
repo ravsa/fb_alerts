@@ -1,10 +1,10 @@
 **fb_alerts**
 simple facebook notification alerts based on gtk3+ and python
-![alt text](https://raw.github.com/ravsa/master/fb_alerts/icons/image_i.png)
+![alt text](https://raw.github.com/ravsa/fb_alerts/master/icons/image_i.png)
 
 
 
-![alt text](https://raw.github.com/ravsa/master/fb_alerts/icons/image_n.png)
+![alt text](https://raw.github.com/ravsa/fb_alerts/master/icons/image_n.png)
 
 **Dependencies:**
 python 2.7+
